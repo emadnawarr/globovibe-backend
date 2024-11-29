@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    /* Basic Settings */
+    "target": "ES2016", // Keep as is, but consider "ES2020" for newer features.
+    "module": "commonjs", // Correct for Node.js and Express.
+    "rootDir": "./src", // Ensures consistent file structure.
+    "outDir": "./dist", // Output compiled files into 'dist' folder.
+    "esModuleInterop": true, // Correct, enables compatibility with CommonJS.
+    "forceConsistentCasingInFileNames": true, // Good for cross-platform consistency.
+    "skipLibCheck": true, // Skips type checking for node_modules, improves compile time.
+
+    /* Development Settings */
+    "sourceMap": true, // Helps debug TypeScript source code in VSCode.
+    "strict": true, // Good for ensuring type safety.
+
+    /* Module Resolution */
+    "moduleResolution": "node", // Standard for resolving modules in Node.js.
+    "baseUrl": "./", // Optional: helps with absolute imports.
+    "paths": {
+      // Optional: Map short paths (good for larger projects).
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src"], // Specify the project source folder.
+  "exclude": ["node_modules", "dist"] // Avoid re-checking compiled and dependency files.
+}
