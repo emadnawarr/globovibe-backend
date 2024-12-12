@@ -24,7 +24,7 @@ model Event {
   description  String
   content      String
   category     Category
-  publishedAt  DateTime
+  publish_date DateTime
   source       String
 
   // Scalar foreign key field
@@ -69,11 +69,12 @@ model Mood_Prediction {
 
 // Enums
 enum Region {
-  NORTH
-  SOUTH
-  EAST
-  WEST
-  CENTRAL
+  Africa
+  Europe
+  Asia
+  North_America
+  South_America
+  Oceania
 }
 
 enum Category {

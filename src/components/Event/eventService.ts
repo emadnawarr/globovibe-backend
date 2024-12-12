@@ -1,8 +1,10 @@
-interface Event {}
+import { Event } from "@/components/interfaces/event";
+import { PrismaClient } from "@prisma/client";
 
-const events: Event[] = [];
+const prisma = new PrismaClient();
 
-const getEvents = (): Event[] => {
+const getEvents = async (): Promise<Event[]> => {
+  const events = await prisma.event.findMany();
   return events;
 };
 
