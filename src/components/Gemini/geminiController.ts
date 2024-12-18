@@ -6,12 +6,19 @@ export const sendPromptToGemini = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { prompt } = req.body;
+    const { country, newsContent } = req.body;
 
-    if (!prompt) {
-      res.status(400).send({ error: "Prompt is required" });
+    if (!country || !newsContent) {
+      res.status(400).send({ error: "Country and news content are required" });
       return;
     }
+
+    // Dynamically construct the prompt
+    const prompt = `
+      Analyze the following news content for ${country} and provide a summary of the overall mood of the country:
+      News Content: ${newsContent}
+      What is the general mood of the country based on this news? Please answer with only one word, here are the options: happy, sad, neutral, and angry.
+    `;
 
     const response = await sendPrompt(prompt);
     res.status(200).send({ text: response });
