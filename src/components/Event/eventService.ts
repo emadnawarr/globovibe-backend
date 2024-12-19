@@ -1,6 +1,6 @@
 import { Event } from "@/components/interfaces/event";
 import { PrismaClient } from "@prisma/client";
-import fetchNews from "@/Services/News/fetchNews";
+import fetchNews from "../../Services/News/fetchNews";
 //TODO:interface for eventService
 const prisma = new PrismaClient();
 
