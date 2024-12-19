@@ -9,3 +9,14 @@ export const getEvents =
       res.status(500).send(error);
     }
   };
+
+export const insertEvents =
+  (eventService: any) => async (req: Request, res: Response) => {
+    try {
+      const events = await eventService.getNews("us"); //TODO:req.country endpoint
+      console.log(events);
+      //TODO:insert events in db
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  };
