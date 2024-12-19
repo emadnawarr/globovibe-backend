@@ -5,6 +5,6 @@ import { getEvents, insertEvents } from "./eventController";
 const eventRouter = Router();
 
 eventRouter.get("/", getEvents(eventService));
-eventRouter.post("/events", insertEvents(eventService));
+eventRouter.post("/insertEvents", insertEvents(eventService));
 
 export default eventRouter;
