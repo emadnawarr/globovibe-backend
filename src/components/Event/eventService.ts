@@ -1,5 +1,6 @@
 import { Event } from "../interfaces/event";
 import { PrismaClient } from "@prisma/client";
+import fetchNews from "../../Services/News/fetchNews";
 import { Category } from "@prisma/client";
 import countryService from "../Country/countryService";
 
@@ -35,4 +36,8 @@ const insertEvents = async (
   });
 };
 
-export default { getEvents, insertEvents };
+const getNews = async (country: string) => {
+  return await fetchNews(country);
+};
+
+export default { getEvents, getNews, insertEvents };
