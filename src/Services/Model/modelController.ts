@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { sendPrompt } from "./geminiService";
+import { sendPrompt } from "./modelService";
 
-export const sendPromptToGemini = async (
+export const sendPromptToModel = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -23,7 +23,7 @@ export const sendPromptToGemini = async (
     const response = await sendPrompt(prompt);
     res.status(200).send({ text: response });
   } catch (error: any) {
-    console.error("Error in Gemini Controller:", error.message);
+    console.error("Error in Model Controller:", error.message);
     res.status(500).send({ error: "Internal Server Error" });
   }
 };

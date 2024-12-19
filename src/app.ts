@@ -1,11 +1,11 @@
 import express from "express";
 import eventRouter from "./components/Event/eventRouter";
-import geminiRouter from "./components/Gemini/geminiRouter";
+import modelRouter from "./Services/Model/modelRouter";
 
 const app = express();
 app.use(express.json());
 
 app.use("/events", eventRouter);
-app.use("/gemini", geminiRouter);
+app.use("/model", modelRouter);
 
 export default app;
