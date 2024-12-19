@@ -14,7 +14,6 @@ export const insertEvents =
   (eventService: any) => async (req: Request, res: Response) => {
     try {
       const events = await eventService.getNews("us"); //TODO:countryCode
-      console.log(events?.data?.articles);
       let articles = events?.data?.articles;
       const countryName = "United States"; //TODO:countryName
       if (!countryName) {
@@ -30,10 +29,7 @@ export const insertEvents =
         });
         return; // Stop further execution
       }
-      await eventService.insertEvents({
-        articles,
-        countryName,
-      });
+      await eventService.insertEvents(articles, countryName);
 
       res.status(201).send({ message: "News articles inserted successfully." });
     } catch (error) {

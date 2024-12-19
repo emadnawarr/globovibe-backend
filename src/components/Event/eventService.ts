@@ -21,12 +21,15 @@ const insertEvents = async (
   }
 
   const eventsToInsert = articles.map((article) => ({
-    title: article.title,
-    description: article.description || "No description provided",
+    title: article.title || "Untitled",
+    description: article.description || "No description available",
     content: article.content || "No content provided",
-    category: Category[article.category as keyof typeof Category], // Convert to enum
-    publish_date: new Date(article.publishedAt),
-    source: article.source || "Unknown",
+    category:
+      Category[article.category as keyof typeof Category] || Category.OTHER, // Convert to enum
+    publish_date: article.publishedAt
+      ? new Date(article.publishedAt).toISOString()
+      : new Date().toISOString(),
+    source: article.source?.name || "Unknown",
     country_id: countryId,
   }));
 
