@@ -12,7 +12,7 @@ const fetchNews = async (
   page?: number
 ) => {
   try {
-    const response = await axios.get("https://newsapi.org/v2/top-headlines?", {
+    const response = await axios.get("https://newsapi.org/v2/top-headlines?", {//TODO: convert to string in public folder
       params: {
         country: country,
         apiKey: process.env.NEWS_API_KEY,
@@ -23,7 +23,7 @@ const fetchNews = async (
         page: page,
       },
     });
-    return response;
+    return response.data;
   } catch (error) {
     console.log(error);
   }
