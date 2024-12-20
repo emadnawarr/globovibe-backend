@@ -1,4 +1,3 @@
-ALTER TABLE public."Country" ADD COLUMN iso_code VARCHAR(2);
 UPDATE public."Country" SET iso_code = 'af' WHERE name = 'Afghanistan';
 UPDATE public."Country" SET iso_code = 'al' WHERE name = 'Albania';
 UPDATE public."Country" SET iso_code = 'dz' WHERE name = 'Algeria';
