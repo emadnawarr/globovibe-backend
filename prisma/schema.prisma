@@ -3,71 +3,57 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // Change this if using a different database
-  url      = env("DATABASE_URL") // Ensure this is set in your .env file
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Country {
-  id      Int       @id @default(autoincrement())
-  name    String
-  region  Region
-
-  // Relationships
+  id              Int               @id @default(autoincrement())
+  name            String
+  region          Region
+  iso_code        String?           @db.VarChar(2)
   events          Event[]
   moods           Mood[]
   moodPredictions Mood_Prediction[]
 }
 
 model Event {
-  id           Int       @id @default(autoincrement())
-  title        String
-  description  String
-  content      String
-  category     Category
-  publish_date DateTime
-  source       String
-
-  // Scalar foreign key field
-  country_id   Int
-
-  // Relationships
-  country      Country   @relation(fields: [country_id], references: [id])
-  moods        Mood[]
+  id              Int               @id @default(autoincrement())
+  title           String
+  description     String
+  content         String
+  category        Category
+  source          String
+  country_id      Int
+  publish_date    DateTime
+  country         Country           @relation(fields: [country_id], references: [id])
+  moods           Mood[]
   moodPredictions Mood_Prediction[]
 }
 
 model Mood {
-  id         Int       @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   type       MoodType
   intensity  Float
   date       DateTime
-
-  // Scalar foreign key fields
   country_id Int
   event_id   Int
-
-  // Relationships
   country    Country  @relation(fields: [country_id], references: [id])
   event      Event    @relation(fields: [event_id], references: [id])
 }
 
 model Mood_Prediction {
-  id               Int       @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   type             MoodType
   intensity        Float
   confidence_level Float
   prediction_date  DateTime
-
-  // Scalar foreign key fields
-  country_id   Int
-  event_id     Int
-
-  // Relationships
-  country     Country  @relation(fields: [country_id], references: [id])
-  event       Event    @relation(fields: [event_id], references: [id])
+  country_id       Int
+  event_id         Int
+  country          Country  @relation(fields: [country_id], references: [id])
+  event            Event    @relation(fields: [event_id], references: [id])
 }
 
-// Enums
 enum Region {
   Africa
   Europe
