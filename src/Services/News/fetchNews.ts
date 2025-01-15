@@ -1,31 +1,59 @@
 import axios from "axios";
+import { Category } from "@prisma/client";
 
-//TODO:category type enum
-//TODO:parameter to interface read DTO
-//TODO:response should be entity DTO
-const fetchNews = async (
-  country?: string,
-  category?: string,
-  sources?: string,
-  keywords?: string,
-  pageSize?: number,
-  page?: number
-) => {
+interface FetchNewsParams {
+  country?: string;
+  category?: Category;
+  keywords?: string;
+  page?: number;
+}
+
+const fetchNews = async ({
+  country,
+  category,
+  keywords,
+  page,
+}: FetchNewsParams) => {
   try {
-    const response = await axios.get("https://newsapi.org/v2/top-headlines?", {
-      params: {
-        country: country,
-        apiKey: process.env.NEWS_API_KEY,
-        category: category,
-        sources: sources,
-        q: keywords,
-        pageSize: pageSize,
-        page: page,
-      },
+    const params: Record<string, string | number | undefined> = {
+      country,
+      apikey: process.env.NEWS_API_KEY!,
+      q: keywords,
+      page,
+    };
+
+    {
+      category && category === Category.OTHER
+        ? (params.category = "general")
+        : (params.category = category?.toLowerCase());
+    }
+
+    Object.keys(params).forEach((key) => {
+      if (params[key] === undefined) {
+        delete params[key];
+      }
     });
-    return response;
-  } catch (error) {
-    console.log(error);
+
+    console.log("Fetching news from GNews with params:", params);
+
+    const response = await axios.get("https://gnews.io/api/v4/top-headlines", {
+      params,
+    });
+
+    if (
+      !response.data ||
+      !response.data.articles ||
+      !Array.isArray(response.data.articles)
+    ) {
+      console.error("Invalid API response:", response.data);
+      throw new Error("The API response is invalid or articles are missing.");
+    }
+
+    console.log("Successfully fetched news:", response.data.articles.length);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching news:", error.message, error.stack);
+    throw new Error(error.response?.data?.message || "Failed to fetch news.");
   }
 };
 

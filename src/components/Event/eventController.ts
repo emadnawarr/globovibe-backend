@@ -13,26 +13,41 @@ export const getEvents =
 export const insertEvents =
   (eventService: any) => async (req: Request, res: Response) => {
     try {
-      const events = await eventService.getNews("us"); //TODO:countryCode
-      let articles = events?.data?.articles;
-      const countryName = "United States"; //TODO:countryName
-      if (!countryName) {
-        res.status(400).send({
-          message: "The 'country' parameter is required in the request body.",
-        });
-        return; // Stop further execution
-      }
+      const countryCode = "eg"; // TODO: Replace with dynamic value
+      const category = "OTHER"; // TODO: Replace with dynamic value
+      const countryName = "Egypt"; // TODO: Replace with dynamic value
 
-      if (!articles || !Array.isArray(articles)) {
+      console.log("Fetching news with:", { countryCode, category });
+      const events = await eventService.getNews(countryCode, category);
+
+      if (
+        !events ||
+        !events.articles ||
+        !Array.isArray(events.articles) ||
+        events.articles.length === 0
+      ) {
+        console.error("No articles found or invalid response:", events);
         res.status(400).send({
           message: "The 'articles' parameter must be a non-empty array.",
         });
-        return; // Stop further execution
+        return;
       }
-      await eventService.insertEvents(articles, countryName);
+
+      const articles = events.articles;
+
+      if (!countryName) {
+        console.error("Missing country name.");
+        res.status(400).send({
+          message: "The 'country' parameter is required in the request body.",
+        });
+        return;
+      }
+
+      await eventService.insertEvents(articles, countryName, category);
 
       res.status(201).send({ message: "News articles inserted successfully." });
-    } catch (error) {
-      res.status(500).send(error);
+    } catch (error: any) {
+      console.error("Internal Server Error:", error.message, error.stack);
+      res.status(500).send({ error: error.message });
     }
   };

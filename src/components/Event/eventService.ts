@@ -12,20 +12,20 @@ const getEvents = async (): Promise<Event[]> => {
 };
 const insertEvents = async (
   articles: any[],
-  countryName: string
+  countryName: string,
+  category?: Category
 ): Promise<void> => {
   const countryId = await countryService.getCountryIdByName(countryName);
 
   if (!countryId) {
-    throw new Error(`Country not found for: ${countryName}`);
+    throw new Error(`Country ID not found for: ${countryName}`);
   }
 
   const eventsToInsert = articles.map((article) => ({
-    title: article.title || "Untitled",
+    title: article.title || "No title available",
     description: article.description || "No description available",
-    content: article.content || "No content provided",
-    category:
-      Category[article.category as keyof typeof Category] || Category.OTHER, // Convert to enum
+    content: article.content || "No content available",
+    category: category || Category.OTHER,
     publish_date: article.publishedAt
       ? new Date(article.publishedAt).toISOString()
       : new Date().toISOString(),
@@ -33,14 +33,20 @@ const insertEvents = async (
     country_id: countryId,
   }));
 
-  await prisma.event.createMany({
-    data: eventsToInsert,
-    skipDuplicates: true,
-  });
+  try {
+    await prisma.event.createMany({
+      data: eventsToInsert,
+      skipDuplicates: true,
+    });
+    console.log("Events inserted successfully.");
+  } catch (error: any) {
+    console.error("Error inserting events into database:", error.message);
+    throw error;
+  }
 };
 
-const getNews = async (country: string) => {
-  return await fetchNews(country);
+const getNews = async (country: string, category?: Category) => {
+  return fetchNews({ country, category });
 };
 
 export default { getEvents, getNews, insertEvents };

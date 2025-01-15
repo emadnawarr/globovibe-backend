@@ -15,7 +15,7 @@ export const sendPromptToModel = async (
 
     // Dynamically construct the prompt
     const prompt = `
-      Analyze the following news content for ${country} and provide a summary of the overall mood of the country:
+      Analyze the following news content for ${country}, written in the country's language, and provide a summary of the overall mood of the country:
       News Content: ${newsContent}
       What is the general mood of the country based on this news? Please answer with only one word, here are the options: happy, sad, neutral, and angry.
     `;
