@@ -2,17 +2,14 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const getCountryIdByName = async (
-  countryName: string
-): Promise<number | null> => {
+const getCountryIdByName = async (countryCode: string): Promise<number> => {
   try {
-    const country = await prisma.country.findFirst({
-      where: { name: countryName }, // Use findFirst to match non-unique fields
+    const country = await prisma.country.findFirstOrThrow({
+      where: { iso_code: countryCode },
     });
-    return country ? country.id : null;
+    return country.id;
   } catch (error) {
-    console.error(`Error fetching country ID for ${countryName}:`, error);
-    return null;
+    throw new Error(`Error fetching country ID for ${countryCode}`);
   }
 };
 

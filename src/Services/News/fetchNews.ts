@@ -1,59 +1,27 @@
-import axios from "axios";
+import IArticle from "@/components/Event/interfaces/IArticle";
+import INewsApiResponse from "@/components/Event/interfaces/INewsApiResponse";
+import INewsParams from "@/components/Event/interfaces/INewsParams";
 import { Category } from "@prisma/client";
+import axios from "axios";
 
-interface FetchNewsParams {
-  country?: string;
-  category?: Category;
-  keywords?: string;
-  page?: number;
-}
-
-const fetchNews = async ({
-  country,
-  category,
-  keywords,
-  page,
-}: FetchNewsParams) => {
+const fetchNews = async (params: INewsParams): Promise<IArticle[]> => {
   try {
-    const params: Record<string, string | number | undefined> = {
-      country,
-      apikey: process.env.NEWS_API_KEY!,
-      q: keywords,
-      page,
-    };
+    const apiKey = process.env.NEWS_API_KEY;
+    if (!apiKey) throw new Error("API key is not in .env file!");
 
-    {
-      category && category === Category.OTHER
-        ? (params.category = "general")
-        : (params.category = category?.toLowerCase());
-    }
-
-    Object.keys(params).forEach((key) => {
-      if (params[key] === undefined) {
-        delete params[key];
-      }
+    const category: Category = Category.top; //ToDo: Categories
+    const response = await axios.get("https://newsdata.io/api/1/latest", {
+      params: { ...params, apiKey, category },
+      timeout: 10000,
     });
+    const data: INewsApiResponse = response.data;
+    if (data.status != "success")
+      throw new Error("Failed to fetch news from API!");
 
-    console.log("Fetching news from GNews with params:", params);
-
-    const response = await axios.get("https://gnews.io/api/v4/top-headlines", {
-      params,
-    });
-
-    if (
-      !response.data ||
-      !response.data.articles ||
-      !Array.isArray(response.data.articles)
-    ) {
-      console.error("Invalid API response:", response.data);
-      throw new Error("The API response is invalid or articles are missing.");
-    }
-
-    console.log("Successfully fetched news:", response.data.articles.length);
-    return response.data;
-  } catch (error: any) {
-    console.error("Error fetching news:", error.message, error.stack);
-    throw new Error(error.response?.data?.message || "Failed to fetch news.");
+    return data.results;
+  } catch (error) {
+    //ToDo: bos 3al documentation of API for response errors
+    throw error;
   }
 };
 

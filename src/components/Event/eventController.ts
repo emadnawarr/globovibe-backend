@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import IEventService from "./interfaces/IEventService";
 
 export const getEvents =
   (eventService: any) => async (req: Request, res: Response) => {
@@ -10,44 +11,18 @@ export const getEvents =
     }
   };
 
-export const insertEvents =
-  (eventService: any) => async (req: Request, res: Response) => {
+export const fetchAndInsertEvents =
+  (eventService: IEventService) => async (req: Request, res: Response) => {
     try {
-      const countryCode = "eg"; // TODO: Replace with dynamic value
-      const category = "OTHER"; // TODO: Replace with dynamic value
-      const countryName = "Egypt"; // TODO: Replace with dynamic value
-
-      console.log("Fetching news with:", { countryCode, category });
-      const events = await eventService.getNews(countryCode, category);
-
-      if (
-        !events ||
-        !events.articles ||
-        !Array.isArray(events.articles) ||
-        events.articles.length === 0
-      ) {
-        console.error("No articles found or invalid response:", events);
-        res.status(400).send({
-          message: "The 'articles' parameter must be a non-empty array.",
-        });
-        return;
-      }
-
-      const articles = events.articles;
-
-      if (!countryName) {
-        console.error("Missing country name.");
-        res.status(400).send({
-          message: "The 'country' parameter is required in the request body.",
-        });
-        return;
-      }
-
-      await eventService.insertEvents(articles, countryName, category);
-
-      res.status(201).send({ message: "News articles inserted successfully." });
+      const country = "eg"; // TODO: different parameters from req from frontend
+      const articles = await eventService.fetchNewsFromAPI({ country });
+      await eventService.insertNews(country, articles);
+      res.status(200).send({
+        success: true,
+        message: "News successfully fetched and inserted.",
+      });
     } catch (error: any) {
-      console.error("Internal Server Error:", error.message, error.stack);
-      res.status(500).send({ error: error.message });
+      console.error("Error fetching and storing news: ", error);
+      res.status(500).send({ success: false, message: error.message });
     }
   };

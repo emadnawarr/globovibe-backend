@@ -11,7 +11,7 @@ model Country {
   id              Int               @id @default(autoincrement())
   name            String
   region          Region
-  iso_code        String?           @db.VarChar(2)
+  iso_code        String           @db.VarChar(2)
   events          Event[]
   moods           Mood[]
   moodPredictions Mood_Prediction[]
@@ -21,8 +21,10 @@ model Event {
   id              Int               @id @default(autoincrement())
   title           String
   description     String
-  content         String
-  category        Category
+  content         String?
+  article_id      String @default("UNKNOWN") @unique
+  language        String @default("UNKNOWN")
+  category        Category[]
   source          String
   country_id      Int
   publish_date    DateTime
@@ -64,11 +66,10 @@ enum Region {
 }
 
 enum Category {
-  SPORTS
-  POLITICS
-  TECHNOLOGY
-  ENTERTAINMENT
-  OTHER
+  top
+  politics
+  domestic
+  other
 }
 
 enum MoodType {

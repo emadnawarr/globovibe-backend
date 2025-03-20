@@ -1,52 +1,49 @@
-import { Event } from "../interfaces/event";
 import { PrismaClient } from "@prisma/client";
 import fetchNews from "../../Services/News/fetchNews";
-import { Category } from "@prisma/client";
+import INewsParams from "./interfaces/INewsParams";
+import IEventService from "./interfaces/IEventService";
+import IArticle from "./interfaces/IArticle";
+import { eventWriteDto, mapEventsWriteDto } from "./utils/eventDto";
 import countryService from "../Country/countryService";
 
 const prisma = new PrismaClient();
 
-const getEvents = async (): Promise<Event[]> => {
-  const events = await prisma.event.findMany();
-  return events;
-};
-const insertEvents = async (
-  articles: any[],
-  countryName: string,
-  category?: Category
-): Promise<void> => {
-  const countryId = await countryService.getCountryIdByName(countryName);
+const eventService: IEventService = {
+  fetchNewsFromAPI: async (params: INewsParams) => {
+    try {
+      return await fetchNews(params);
+    } catch (error) {
+      throw error;
+    }
+  },
 
-  if (!countryId) {
-    throw new Error(`Country ID not found for: ${countryName}`);
-  }
+  insertNews: async (
+    countryCode: string,
+    articles: IArticle[]
+  ): Promise<void> => {
+    try {
+      const countryId = await countryService.getCountryIdByName(countryCode);
+      for (const article of articles) {
+        const existingEvent = await eventService.fetchEventByArticleId(
+          article.article_id
+        );
+        if (existingEvent) continue;
+        const eventsToPost = mapEventsWriteDto(countryId, article);
+        await prisma.event.create({ data: eventsToPost });
+      }
+    } catch (error) {
+      throw error;
+    }
+  },
 
-  const eventsToInsert = articles.map((article) => ({
-    title: article.title || "No title available",
-    description: article.description || "No description available",
-    content: article.content || "No content available",
-    category: category || Category.OTHER,
-    publish_date: article.publishedAt
-      ? new Date(article.publishedAt).toISOString()
-      : new Date().toISOString(),
-    source: article.source?.name || "Unknown",
-    country_id: countryId,
-  }));
-
-  try {
-    await prisma.event.createMany({
-      data: eventsToInsert,
-      skipDuplicates: true,
+  fetchEventByArticleId: async (
+    articleId: string
+  ): Promise<eventWriteDto | null> => {
+    const event: eventWriteDto | null = await prisma.event.findUnique({
+      where: { article_id: articleId },
     });
-    console.log("Events inserted successfully.");
-  } catch (error: any) {
-    console.error("Error inserting events into database:", error.message);
-    throw error;
-  }
+    return event;
+  },
 };
 
-const getNews = async (country: string, category?: Category) => {
-  return fetchNews({ country, category });
-};
-
-export default { getEvents, getNews, insertEvents };
+export default eventService;
