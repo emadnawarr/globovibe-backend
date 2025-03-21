@@ -1,16 +1,6 @@
 import { Request, Response } from "express";
 import IEventService from "./interfaces/IEventService";
 
-export const getEvents =
-  (eventService: any) => async (req: Request, res: Response) => {
-    try {
-      const events = await eventService.getEvents();
-      res.status(200).send(events);
-    } catch (error) {
-      res.status(500).send(error);
-    }
-  };
-
 export const fetchAndInsertEvents =
   (eventService: IEventService) => async (req: Request, res: Response) => {
     try {
