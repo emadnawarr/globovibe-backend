@@ -1,16 +1,31 @@
-import { PrismaClient } from "@prisma/client";
+import { Country, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const getCountryIdByName = async (countryCode: string): Promise<number> => {
-  try {
-    const country = await prisma.country.findFirstOrThrow({
-      where: { iso_code: countryCode },
-    });
-    return country.id;
-  } catch (error) {
-    throw new Error(`Error fetching country ID for ${countryCode}`);
-  }
+export interface ICountryService {
+  getAllCountries(): Promise<Country[]>;
+  getCountryIdByName(countryCode: string): Promise<number>;
+}
+
+const countryService: ICountryService = {
+  getCountryIdByName: async (countryCode: string) => {
+    try {
+      const country = await prisma.country.findFirstOrThrow({
+        where: { iso_code: countryCode },
+      });
+      return country.id;
+    } catch (error) {
+      throw new Error(`Error fetching country ID for ${countryCode}`);
+    }
+  },
+  getAllCountries: async () => {
+    try {
+      const countries: Country[] = await prisma.country.findMany();
+      return countries;
+    } catch (error) {
+      throw new Error(`Error fetching countries`);
+    }
+  },
 };
 
-export default { getCountryIdByName };
+export default countryService;

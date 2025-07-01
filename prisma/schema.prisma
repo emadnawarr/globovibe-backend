@@ -24,7 +24,7 @@ model Event {
   content         String?
   article_id      String @default("UNKNOWN") @unique
   language        String @default("UNKNOWN")
-  category        Category[]
+  category        String
   source          String
   country_id      Int
   publish_date    DateTime
@@ -65,12 +65,6 @@ enum Region {
   Oceania
 }
 
-enum Category {
-  top
-  politics
-  domestic
-  other
-}
 
 enum MoodType {
   HAPPY

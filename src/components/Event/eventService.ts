@@ -1,12 +1,18 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import fetchNews from "../../Services/News/fetchNews";
 import INewsParams from "./interfaces/INewsParams";
-import IEventService from "./interfaces/IEventService";
 import IArticle from "./interfaces/IArticle";
-import { eventWriteDto, mapEventsWriteDto } from "./utils/eventDto";
+import { mapEventsWriteDto } from "./utils/eventDto";
 import countryService from "../Country/countryService";
 
 const prisma = new PrismaClient();
+export type eventWriteDto = Prisma.EventUncheckedCreateInput;
+
+export interface IEventService {
+  fetchNewsFromAPI(params: INewsParams): Promise<IArticle[]>;
+  insertNews(country: string, articles: IArticle[]): Promise<void>;
+  fetchEventByArticleId(article_id: string): Promise<eventWriteDto | null>;
+}
 
 const eventService: IEventService = {
   fetchNewsFromAPI: async (params: INewsParams) => {

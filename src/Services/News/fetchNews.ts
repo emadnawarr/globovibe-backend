@@ -1,7 +1,6 @@
 import IArticle from "@/components/Event/interfaces/IArticle";
 import INewsApiResponse from "@/components/Event/interfaces/INewsApiResponse";
 import INewsParams from "@/components/Event/interfaces/INewsParams";
-import { Category } from "@prisma/client";
 import axios from "axios";
 
 const fetchNews = async (params: INewsParams): Promise<IArticle[]> => {
@@ -9,7 +8,7 @@ const fetchNews = async (params: INewsParams): Promise<IArticle[]> => {
     const apiKey = process.env.NEWS_API_KEY;
     if (!apiKey) throw new Error("API key is not in .env file!");
 
-    const category: Category = Category.top; //ToDo: Categories
+    const category = "top"; //ToDo: Categories
     const response = await axios.get("https://newsdata.io/api/1/latest", {
       params: { ...params, apiKey, category },
       timeout: 10000,

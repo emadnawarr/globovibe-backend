@@ -1,4 +1,3 @@
-import { Category } from "@prisma/client";
 import IArticle from "../interfaces/IArticle";
 
 export interface eventWriteDto {
@@ -8,8 +7,10 @@ export interface eventWriteDto {
   publish_date: Date;
   source: string;
   language: string;
-  country_id: number;
-  category: Category[];
+  country: {
+    connect: { id: number };
+  };
+  category: string;
 }
 
 export const mapEventsWriteDto = (
@@ -19,12 +20,14 @@ export const mapEventsWriteDto = (
   const events: eventWriteDto = {
     article_id: article.article_id,
     title: article.title,
-    description: article.description,
+    description: article.description ?? "",
     publish_date: new Date(article.pubDate),
     source: article.source_name,
     language: article.language,
-    country_id: countryId,
-    category: article.category,
+    country: {
+      connect: { id: countryId },
+    },
+    category: "top",
   };
   return events;
 };
