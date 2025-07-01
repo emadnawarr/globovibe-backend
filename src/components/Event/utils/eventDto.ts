@@ -13,6 +13,18 @@ export interface eventWriteDto {
   category: string;
 }
 
+export interface eventReadDto {
+  id: number;
+  article_id: string;
+  title: string;
+  description: string;
+  publish_date: Date;
+  source: string;
+  language: string;
+  country_id: number;
+  category: string;
+}
+
 export const mapEventsWriteDto = (
   countryId: number,
   article: IArticle

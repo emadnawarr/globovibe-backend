@@ -1,17 +1,12 @@
 -- CreateEnum
-CREATE TYPE "Region" AS ENUM ('NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTRAL');
-
--- CreateEnum
-CREATE TYPE "Category" AS ENUM ('SPORTS', 'POLITICS', 'TECHNOLOGY', 'ENTERTAINMENT', 'OTHER');
-
--- CreateEnum
-CREATE TYPE "MoodType" AS ENUM ('HAPPY', 'SAD', 'ANGRY', 'NEUTRAL');
+CREATE TYPE "Region" AS ENUM ('Africa', 'Europe', 'Asia', 'North_America', 'South_America', 'Oceania');
 
 -- CreateTable
 CREATE TABLE "Country" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "region" "Region" NOT NULL,
+    "iso_code" VARCHAR(2) NOT NULL,
 
     CONSTRAINT "Country_pkey" PRIMARY KEY ("id")
 );
@@ -21,11 +16,13 @@ CREATE TABLE "Event" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "category" "Category" NOT NULL,
-    "publishedAt" TIMESTAMP(3) NOT NULL,
+    "content" TEXT,
     "source" TEXT NOT NULL,
     "country_id" INTEGER NOT NULL,
+    "publish_date" TIMESTAMP(3) NOT NULL,
+    "article_id" TEXT NOT NULL DEFAULT 'UNKNOWN',
+    "language" TEXT NOT NULL DEFAULT 'UNKNOWN',
+    "category" TEXT NOT NULL,
 
     CONSTRAINT "Event_pkey" PRIMARY KEY ("id")
 );
@@ -33,7 +30,7 @@ CREATE TABLE "Event" (
 -- CreateTable
 CREATE TABLE "Mood" (
     "id" SERIAL NOT NULL,
-    "type" "MoodType" NOT NULL,
+    "type" TEXT NOT NULL,
     "intensity" DOUBLE PRECISION NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "country_id" INTEGER NOT NULL,
@@ -45,7 +42,7 @@ CREATE TABLE "Mood" (
 -- CreateTable
 CREATE TABLE "Mood_Prediction" (
     "id" SERIAL NOT NULL,
-    "type" "MoodType" NOT NULL,
+    "type" TEXT NOT NULL,
     "intensity" DOUBLE PRECISION NOT NULL,
     "confidence_level" DOUBLE PRECISION NOT NULL,
     "prediction_date" TIMESTAMP(3) NOT NULL,
@@ -54,6 +51,9 @@ CREATE TABLE "Mood_Prediction" (
 
     CONSTRAINT "Mood_Prediction_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Event_article_id_key" ON "Event"("article_id");
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_country_id_fkey" FOREIGN KEY ("country_id") REFERENCES "Country"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

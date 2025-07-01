@@ -1,5 +1,3 @@
-import { Category } from "@prisma/client";
-
 interface IArticle {
   article_id: string;
   title: string;
@@ -8,7 +6,7 @@ interface IArticle {
   source_name: string;
   language: string;
   country: string[];
-  category: Category[];
+  category: string;
 }
 
 export default IArticle;

@@ -11,7 +11,7 @@ model Country {
   id              Int               @id @default(autoincrement())
   name            String
   region          Region
-  iso_code        String           @db.VarChar(2)
+  iso_code        String            @db.VarChar(2)
   events          Event[]
   moods           Mood[]
   moodPredictions Mood_Prediction[]
@@ -22,12 +22,12 @@ model Event {
   title           String
   description     String
   content         String?
-  article_id      String @default("UNKNOWN") @unique
-  language        String @default("UNKNOWN")
-  category        String
   source          String
   country_id      Int
   publish_date    DateTime
+  article_id      String            @unique @default("UNKNOWN")
+  language        String            @default("UNKNOWN")
+  category        String
   country         Country           @relation(fields: [country_id], references: [id])
   moods           Mood[]
   moodPredictions Mood_Prediction[]
@@ -35,7 +35,7 @@ model Event {
 
 model Mood {
   id         Int      @id @default(autoincrement())
-  type       MoodType
+  type       String
   intensity  Float
   date       DateTime
   country_id Int
@@ -46,7 +46,7 @@ model Mood {
 
 model Mood_Prediction {
   id               Int      @id @default(autoincrement())
-  type             MoodType
+  type             String
   intensity        Float
   confidence_level Float
   prediction_date  DateTime
@@ -65,10 +65,3 @@ enum Region {
   Oceania
 }
 
-
-enum MoodType {
-  HAPPY
-  SAD
-  ANGRY
-  NEUTRAL
-}
