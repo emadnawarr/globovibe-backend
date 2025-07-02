@@ -1,6 +1,6 @@
 import { eventReadDto } from "@/components/Event/utils/eventDto.js";
-import { sendPrompt } from "./geminiModel.js";
 import { ISentiment } from "@/components/Vibes/vibeController.js";
+import { sendPrompt } from "./geminiModel";
 
 export const analyzeSentiment = async (
   event: eventReadDto,
@@ -27,6 +27,8 @@ Rules:
 Now analyze this:
 
 Country: ${country}
+
+Title: ${event.title}
 
 Article: ${event.description}
     `.trim();

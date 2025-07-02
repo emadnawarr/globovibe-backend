@@ -36,7 +36,7 @@ export const loadVibes =
           console.error(`❌ Error processing event ${event.id}:`, error);
         }
       }
-      console.log("⏳ Waiting for 6 seconds before next batch...");
+      console.log("⏳ Waiting for 65 seconds before next batch...");
       await delay(DELAY_MS);
     }
   };

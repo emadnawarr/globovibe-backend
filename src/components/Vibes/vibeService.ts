@@ -23,7 +23,7 @@ const vibeService: IVibeService = {
           none: {},
         },
       },
-      take: 60,
+      take: 10,
     });
     return unanalyzedEvents;
   },

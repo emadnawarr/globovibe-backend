@@ -14,7 +14,7 @@ export const fetchAndInsertEvents =
             console.log(`⏳ Fetching events for ${country.name}...`);
             const articles = await eventService.fetchNewsFromAPI({
               country: country.iso_code,
-              size: 10,
+              size: 5,
             });
             await eventService.insertNews(country.iso_code, articles);
             console.log(`✅ ${country.name} done!`);
