@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Vibe } from "./vibe.interface";
 import { eventReadDto } from "../Event/utils/eventDto";
 import { ISentiment } from "./vibeController";
+import { getDateRange } from "../Event/utils/dateExtraction";
 
 const prisma = new PrismaClient();
 
@@ -17,12 +18,7 @@ const vibeService: IVibeService = {
     days: number
   ): Promise<Vibe[]> => {
     try {
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - (days - 1));
-      startDate.setHours(0, 0, 0, 0);
-
-      const endDate = new Date();
-      endDate.setHours(23, 59, 59, 999);
+      const { startDate, endDate } = getDateRange(days);
 
       const vibes = await prisma.mood.findMany({
         where: {
