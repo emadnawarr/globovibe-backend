@@ -1,20 +1,43 @@
 import { PrismaClient } from "@prisma/client";
 import { Vibe } from "./vibe.interface";
-import { eventWriteDto } from "../Event/eventService";
 import { eventReadDto } from "../Event/utils/eventDto";
 import { ISentiment } from "./vibeController";
 
 const prisma = new PrismaClient();
 
 export interface IVibeService {
-  fetchVibesForCountry(country: string): Promise<Vibe[]>;
+  fetchVibesForCountry(country_id: number, days: number): Promise<Vibe[]>;
   fetchUnanalyzedEvents(): Promise<eventReadDto[]>;
   insertVibe(event: eventReadDto, sentiment: ISentiment): Promise<void>;
 }
 
 const vibeService: IVibeService = {
-  fetchVibesForCountry: function (country: string): Promise<Vibe[]> {
-    throw new Error("Function not implemented.");
+  fetchVibesForCountry: async (
+    country_id: number,
+    days: number
+  ): Promise<Vibe[]> => {
+    try {
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - (days - 1));
+      startDate.setHours(0, 0, 0, 0);
+
+      const endDate = new Date();
+      endDate.setHours(23, 59, 59, 999);
+
+      const vibes = await prisma.mood.findMany({
+        where: {
+          country_id,
+          date: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+
+      return vibes;
+    } catch (error) {
+      throw error;
+    }
   },
   fetchUnanalyzedEvents: async (): Promise<eventReadDto[]> => {
     const unanalyzedEvents: eventReadDto[] = await prisma.event.findMany({
