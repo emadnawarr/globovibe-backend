@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const initScheduler = () => {
   // ⏰ Run at 12:20 AM Egypt time (which is 21:20 UTC)
-  cron.schedule("37 21 * * *", async () => {
+  cron.schedule("41 21 * * *", async () => {
     console.log("⏰ [Scheduler] Running /vibes/getAllVibes");
 
     try {
