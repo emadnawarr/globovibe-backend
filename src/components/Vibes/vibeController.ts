@@ -1,7 +1,5 @@
-import { analyzeSentiment } from "@/Services/Model/geminiService";
 import { IVibeService } from "./vibeService";
 import { ICountryService } from "../Country/countryService";
-import { delay } from "@/utils/reusableFunctions";
 import { Request, Response } from "express";
 import { generateSentimentAnalysis } from "./utils/sentimentAnalysis";
 import { IVibesResponse } from "./vibe.interface";

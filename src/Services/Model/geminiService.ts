@@ -1,6 +1,6 @@
-import { ISentiment } from "@/components/Vibes/vibeController.js";
+import { ISentiment } from "../../components/Vibes/vibeController";
 import { sendPrompt } from "./geminiModel";
-import { eventReadDto } from "@/components/Event/utils/eventDto";
+import { eventReadDto } from "../../components/Event/utils/eventDto";
 
 export const analyzeSentiment = async (
   event: eventReadDto,

@@ -1,6 +1,6 @@
-import IArticle from "@/components/Event/interfaces/IArticle";
-import INewsApiResponse from "@/components/Event/interfaces/INewsApiResponse";
-import INewsParams from "@/components/Event/interfaces/INewsParams";
+import IArticle from "../../components/Event/interfaces/IArticle";
+import INewsApiResponse from "../../components/Event/interfaces/INewsApiResponse";
+import INewsParams from "../../components/Event/interfaces/INewsParams";
 import axios from "axios";
 
 const fetchNews = async (params: INewsParams): Promise<IArticle[]> => {

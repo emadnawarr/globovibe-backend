@@ -1,9 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Vibe } from "./vibe.interface";
 import { getDateRange } from "../Event/utils/dateExtraction";
-import { analyzeSentiment } from "@/Services/Model/geminiService";
+import { analyzeSentiment } from "../../Services/Model/geminiService";
 import { eventReadDto } from "../Event/utils/eventDto";
-import IArticle from "../Event/interfaces/IArticle";
 
 const prisma = new PrismaClient();
 
