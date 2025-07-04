@@ -17,7 +17,10 @@ export interface IEventService {
     limit: number
   ): Promise<eventReadDto[]>;
   fetchNewsFromAPI(params: INewsParams): Promise<IArticle[]>;
-  insertNews(country: string, articles: IArticle[]): Promise<void>;
+  insertNews(
+    countryCode: string,
+    articles: IArticle[]
+  ): Promise<eventReadDto[]>;
   fetchEventByArticleId(article_id: string): Promise<eventWriteDto | null>;
 }
 
@@ -33,17 +36,23 @@ const eventService: IEventService = {
   insertNews: async (
     countryCode: string,
     articles: IArticle[]
-  ): Promise<void> => {
+  ): Promise<eventReadDto[]> => {
     try {
       const countryId = await countryService.getCountryIdByName(countryCode);
+      const insertedEvents: eventReadDto[] = [];
+
       for (const article of articles) {
         const existingEvent = await eventService.fetchEventByArticleId(
           article.article_id
         );
         if (existingEvent) continue;
         const eventsToPost = mapEventsWriteDto(countryId, article);
-        await prisma.event.create({ data: eventsToPost });
+        const newEvent = await prisma.event.create({
+          data: eventsToPost,
+        });
+        insertedEvents.push(newEvent);
       }
+      return insertedEvents;
     } catch (error) {
       throw error;
     }

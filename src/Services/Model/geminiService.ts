@@ -1,6 +1,6 @@
-import { eventReadDto } from "@/components/Event/utils/eventDto.js";
 import { ISentiment } from "@/components/Vibes/vibeController.js";
 import { sendPrompt } from "./geminiModel";
+import { eventReadDto } from "@/components/Event/utils/eventDto";
 
 export const analyzeSentiment = async (
   event: eventReadDto,
@@ -40,7 +40,8 @@ Article: ${event.description}
     // Try to extract and parse JSON safely
     const jsonMatch = raw.match(/\{[\s\S]*?\}/);
     if (jsonMatch) {
-      const sentiment = JSON.parse(jsonMatch[0]);
+      const sentiment: ISentiment = JSON.parse(jsonMatch[0]);
+      if (!sentiment) throw new Error("Unable to fetch sentiment!");
       return sentiment;
     } else {
       console.warn("Malformed response:", raw);

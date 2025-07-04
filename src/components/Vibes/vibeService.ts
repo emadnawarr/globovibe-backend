@@ -1,15 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { Vibe } from "./vibe.interface";
-import { eventReadDto } from "../Event/utils/eventDto";
-import { ISentiment } from "./vibeController";
 import { getDateRange } from "../Event/utils/dateExtraction";
+import { analyzeSentiment } from "@/Services/Model/geminiService";
+import { eventReadDto } from "../Event/utils/eventDto";
+import IArticle from "../Event/interfaces/IArticle";
 
 const prisma = new PrismaClient();
 
 export interface IVibeService {
   fetchVibesForCountry(country_id: number, days: number): Promise<Vibe[]>;
   fetchUnanalyzedEvents(): Promise<eventReadDto[]>;
-  insertVibe(event: eventReadDto, sentiment: ISentiment): Promise<void>;
+  insertVibe(event: eventReadDto, countryName: string): Promise<void>;
 }
 
 const vibeService: IVibeService = {
@@ -46,8 +47,13 @@ const vibeService: IVibeService = {
     });
     return unanalyzedEvents;
   },
-  insertVibe: async (event, sentiment): Promise<void> => {
+  insertVibe: async (event, countryName): Promise<void> => {
     try {
+      const sentiment = await analyzeSentiment(event, countryName);
+      if (!sentiment) {
+        console.warn(`⚠️ No sentiment returned for event ${event.id}`);
+        return;
+      }
       await prisma.mood.create({
         data: {
           type: sentiment.type,
@@ -59,7 +65,7 @@ const vibeService: IVibeService = {
       });
       console.log("Inserted Vibe");
     } catch (error) {
-      throw error;
+      throw new Error("Vibe can't process!");
     }
   },
 };

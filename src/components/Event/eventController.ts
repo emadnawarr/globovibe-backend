@@ -1,9 +1,14 @@
 import { Request, Response } from "express";
 import { IEventService } from "./eventService";
 import { ICountryService } from "../Country/countryService";
+import { IVibeService } from "../Vibes/vibeService";
 
 export const fetchAndInsertEvents =
-  (eventService: IEventService, countryService: ICountryService) =>
+  (
+    eventService: IEventService,
+    countryService: ICountryService,
+    vibeService: IVibeService
+  ) =>
   async (req: Request, res: Response) => {
     try {
       const countries = await countryService.getAllCountries();
@@ -12,21 +17,28 @@ export const fetchAndInsertEvents =
         setTimeout(async () => {
           try {
             console.log(`⏳ Fetching events for ${country.name}...`);
-            const articles = await eventService.fetchNewsFromAPI({
+            const events = await eventService.fetchNewsFromAPI({
               country: country.iso_code,
               size: 5,
             });
-            await eventService.insertNews(country.iso_code, articles);
+
+            const insertedEvents = await eventService.insertNews(
+              country.iso_code,
+              events
+            );
+            for (const insertedEvent of insertedEvents) {
+              await vibeService.insertVibe(insertedEvent, country.name);
+            }
             console.log(`✅ ${country.name} done!`);
           } catch (err: any) {
             console.error(`❌ Error with ${country.name}:`, err.message);
           }
-        }, index * 35_000); // 35 seconds = 35,000 milliseconds
+        }, index * 61_000); // 61 seconds = 61,000 milliseconds
       });
 
       res.status(202).json({
         success: true,
-        message: `Scheduled ${countries.length} countries to be processed every 35 seconds.`,
+        message: `Scheduled ${countries.length} countries to be processed every 1 minute.`,
       });
     } catch (err: any) {
       console.error("🚨 Scheduling failed:", err.message);
