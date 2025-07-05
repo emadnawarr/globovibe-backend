@@ -2,7 +2,7 @@ export const getDateRange = (
   days: number
 ): { startDate: Date; endDate: Date } => {
   const startDate = new Date();
-  startDate.setDate(startDate.getDate() - (days - 1));
+  startDate.setDate(startDate.getDate() - days);
   startDate.setHours(0, 0, 0, 0);
 
   const endDate = new Date();
