@@ -14,7 +14,7 @@ export const getAllVibes =
   async (req: Request, res: Response): Promise<void> => {
     try {
       const daysParam = req.query.days as string | undefined;
-      if (!daysParam || isNaN(Number(daysParam)) || Number(daysParam) < 1) {
+      if (!daysParam || isNaN(Number(daysParam)) || Number(daysParam) < 0) {
         res.status(400).json({
           message:
             "`days` query parameter is required and must be a positive number.",
