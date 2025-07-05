@@ -38,3 +38,16 @@ export const getAllVibes =
       res.status(500).json({ message: "Internal server error" });
     }
   };
+
+export const getUserInputPrediction =
+  (vibeService: IVibeService) =>
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { userInput } = req.body;
+      const prediction = await vibeService.predictUserInput(userInput);
+      res.status(200).json({ prediction });
+    } catch (error) {
+      console.error("Error in prediction:", error);
+      res.status(500).json({ message: "Error trying to predict user input!" });
+    }
+  };

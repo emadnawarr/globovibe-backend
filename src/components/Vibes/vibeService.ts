@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { Vibe } from "./vibe.interface";
+import { IUserInputPrediction, Vibe } from "./vibe.interface";
 import { getDateRange } from "../Event/utils/dateExtraction";
-import { analyzeSentiment } from "../../Services/Model/geminiService";
+import {
+  analyzeSentiment,
+  predictSentiment,
+} from "../../Services/Model/geminiService";
 import { eventReadDto } from "../Event/utils/eventDto";
 
 const prisma = new PrismaClient();
@@ -10,6 +13,7 @@ export interface IVibeService {
   fetchVibesForCountry(country_id: number, days: number): Promise<Vibe[]>;
   fetchUnanalyzedEvents(): Promise<eventReadDto[]>;
   insertVibe(event: eventReadDto, countryName: string): Promise<void>;
+  predictUserInput(userInput: string): Promise<IUserInputPrediction[]>;
 }
 
 const vibeService: IVibeService = {
@@ -66,6 +70,11 @@ const vibeService: IVibeService = {
     } catch (error) {
       throw new Error("Vibe can't process!");
     }
+  },
+  predictUserInput: async (
+    userInput: string
+  ): Promise<IUserInputPrediction[]> => {
+    return await predictSentiment(userInput);
   },
 };
 export default vibeService;

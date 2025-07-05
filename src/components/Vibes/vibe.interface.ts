@@ -30,3 +30,9 @@ export interface IVibesResponse {
   country: Country;
   sentimentAnalysisForCountry: ISentimentAnalysis;
 }
+
+export interface IUserInputPrediction {
+  country: string;
+  sentimentType: string;
+  intensity: number;
+}
