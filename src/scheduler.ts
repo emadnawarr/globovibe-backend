@@ -2,8 +2,7 @@ import cron from "node-cron";
 import axios from "axios";
 
 export const initScheduler = () => {
-  // ⏰ Run at 12:20 AM Egypt time (which is 21:20 UTC)
-  cron.schedule("0 7 * * *", async () => {
+  cron.schedule("0 11 * * *", async () => {
     console.log("⏰ [Scheduler] Running /events/loadEvents");
 
     try {
