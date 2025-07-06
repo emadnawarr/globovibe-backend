@@ -21,7 +21,8 @@ export const getAllVibes =
         });
         return;
       }
-      const days = parseInt(daysParam, 10);
+      let days = parseInt(daysParam, 10);
+      days = days + 1;
 
       const countries = await countryService.getAllCountries();
       const allVibes: IVibesResponse[] = [];

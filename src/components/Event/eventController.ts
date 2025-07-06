@@ -63,7 +63,8 @@ export const getNews =
         });
         return;
       }
-      const days = parseInt(daysParam, 10);
+      let days = parseInt(daysParam, 10);
+      days = days + 1;
 
       const limit = parseInt(limitParam) || 10;
 
