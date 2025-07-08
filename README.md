@@ -55,6 +55,13 @@ npx prisma migrate dev --name init
 ### 6. Start the Application
 npm run dev
 
+### 7. 💻 Running with the Frontend Locally
+
+To run the backend alongside the frontend interface, you need to clone and run the frontend repository:
+
+Frontend repo: [https://github.com/youssefwaheedd/globovibe-frontend](https://github.com/youssefwaheedd/globovibe-frontend)
+
+
 ## 📬 API Endpoints
 GET	/events/loadEvents	Fetch and insert real-time events with their sentiments(executed daily using a cron job)
 
@@ -77,3 +84,4 @@ The model returns:
 }
 
 The result is stored in the database linked to the original event and its country.
+
