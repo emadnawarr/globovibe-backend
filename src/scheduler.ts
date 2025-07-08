@@ -2,7 +2,7 @@ import cron from "node-cron";
 import axios from "axios";
 
 export const initScheduler = () => {
-  cron.schedule("0 11 * * *", async () => {
+  cron.schedule("0 22 * * *", async () => {
     console.log("⏰ [Scheduler] Running /events/loadEvents");
 
     try {
