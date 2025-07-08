@@ -31,7 +31,7 @@ Frontend: [globovibe.vercel.app](https://globovibe.vercel.app)
 
 ### 1. Clone the Repository
 
-git clone https://github.com/your-username/globovibe-backend.git
+git clone https://github.com/emadnawarr/globovibe-backend.git
 
 cd globovibe-backend
 
